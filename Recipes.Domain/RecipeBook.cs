@@ -22,20 +22,20 @@ namespace Recipes.Domain
 
         public void RemoveRecipe(string name)
         {
-            for (int i = 0; i < numRecipes; ++i)
-            {
-                if (this.recipes[i].Name == name)
-                {
-                    RemoveElement(i);
-                }
-            }
+            RemoveRecipe(recipe => recipe.Name == name);
+
         }
 
         public void RemoveRecipe(RecipeCategory category)
         {
+            RemoveRecipe(recipe => recipe.Category == category);
+        }
+
+        private void RemoveRecipe(Func<Recipe, bool> f)
+        {
             for (int i = 0; i < numRecipes; ++i)
             {
-                if (this.recipes[i].Category == category)
+                if (f(recipes[i]))
                 {
                     RemoveElement(i);
                 }
