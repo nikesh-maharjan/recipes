@@ -8,30 +8,63 @@ namespace Recipes.Domain
 {
     public class RecipeBook
     {
-        Recipe[] recipes = new[]
-            { new Recipe { Name = "My Great Recipe"
-                         , Summary = "The best recipe you've never had"
-                         , Description = "Combine the ingredients in a large bathtub. Simmer until gelatinous. Eat with spork."
-                         , Ingredients =
-                               new[] { new Ingredient { Quantity = 5
-                                                      , Unit     = "cups"
-                                                      , Name     = "Sugar" }
-                                     , new Ingredient { Quantity = 5
-                                                      , Unit     = "loaves"
-                                                      , Name     = "Bread" }
-                                     , new Ingredient { Quantity = 0.5
-                                                      , Unit     = "tbsp"
-                                                      , Name     = "Yeast" }}}};
+        Recipe[] recipes;
 
-        public void AddRecipe()
-        { throw new NotImplementedException(); }
+        int numRecipes = 0;
 
-        public void RemoveRecipe()
-        { throw new NotImplementedException(); }
+        public RecipeBook()
+        {
+            recipes = new Recipe[1024];
+        }
+
+        public void AddRecipe(Recipe recipe) =>
+            recipes[numRecipes++] = recipe;
+
+        public void RemoveRecipe(string name)
+        {
+            RemoveRecipe(recipe => recipe.Name == name);
+
+        }
+
+        public void RemoveRecipe(RecipeCategory category)
+        {
+            RemoveRecipe(recipe => recipe.Category == category);
+        }
+
+        private void RemoveRecipe(Func<Recipe, bool> f)
+        {
+            for (int i = 0; i < numRecipes; ++i)
+            {
+                if (f(recipes[i]))
+                {
+                    RemoveElement(i);
+                }
+            }
+        }
+
+        private void RemoveElement(int i)
+        {
+            if ((numRecipes != 0) && (i < numRecipes))
+            {
+                this.recipes[i] = this.recipes[--numRecipes];
+                this.recipes[numRecipes] = null;
+            }
+        }
 
         public Recipe[] RetrieveRecipe(string name)
         {
-            return this.recipes; // TODO FIXME
+            return this.recipes
+                       .Take(numRecipes)
+                       .Where(x => x.Name == name)
+                       .ToArray();
+        }
+
+        public Recipe[] RetrieveRecipe(RecipeCategory category)
+        {
+            return this.recipes
+                       .Take(numRecipes)
+                       .Where(x => x.Category == category)
+                       .ToArray();
         }
     }
 }

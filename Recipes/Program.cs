@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Recipes.Abstract;
+using Recipes.Concrete;
+
 namespace Recipes
 {
     class Program
     {
         static void Main(string[] args)
         {
-            var app = new Application();
+            IRunnable app = new Application();
 
             app.Run();
         }
